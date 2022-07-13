@@ -1,25 +1,20 @@
 import axios from 'axios';
+import {_ULR_BASE_} from '../constants';
+import {setLocalStorage} from '../helpers';
+import {LoginBody, LoginSuccess, Usuario} from '../interfaces/login';
 
-const _ULR_BASE_ = 'https://testing-1.api.encamino.ar/';
-
-interface ILogin {
-  dni: string;
-  email: string;
-  password: string;
-}
-
-export default async function userLogin(body: ILogin) {
-  return new Promise(async (resolve, reject) => {
+export default async function userLogin(
+  body: LoginBody,
+): Promise<LoginSuccess> {
+  return new Promise(async (resolve, _) => {
     try {
-      const result = await axios.post(`${_ULR_BASE_}auth/login`, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      const result = await axios.post<LoginSuccess>(
+        `${_ULR_BASE_}auth/login`,
         body,
-      });
+      );
       resolve(result.data);
-    } catch ({response}) {
-      reject(response);
+    } catch (e: any) {
+      resolve(e.response.data.message);
     }
   });
 }
